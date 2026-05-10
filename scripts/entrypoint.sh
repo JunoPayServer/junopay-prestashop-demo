@@ -55,6 +55,7 @@ chmod +x /tmp/init-scripts/seed-demo.php
 cat > /tmp/init-scripts/zz-fix-permissions.sh <<'SH'
 #!/usr/bin/env bash
 set -euo pipefail
+rm -rf /var/www/html/var/cache/prod/* /var/www/html/var/cache/dev/*
 mkdir -p /var/www/html/var/cache/prod/smarty/compile /var/www/html/var/cache/prod/smarty/cache
 chown -R www-data:www-data /var/www/html/var /var/www/html/modules/junopay
 SH

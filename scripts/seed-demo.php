@@ -82,7 +82,7 @@ foreach ($db->executeS('SELECT id_currency FROM ' . _DB_PREFIX_ . 'currency WHER
     ));
 }
 $db->execute('DELETE FROM ' . _DB_PREFIX_ . 'module_country WHERE id_module = ' . (int)$moduleId);
-foreach ($db->executeS('SELECT id_country FROM ' . _DB_PREFIX_ . 'country WHERE active = 1') as $row) {
+foreach ($db->executeS('SELECT id_country FROM ' . _DB_PREFIX_ . 'country') as $row) {
     $db->insert('module_country', array(
         'id_module' => $moduleId,
         'id_shop' => (int)Configuration::get('PS_SHOP_DEFAULT'),
@@ -95,6 +95,14 @@ foreach ($db->executeS('SELECT id_group FROM ' . _DB_PREFIX_ . 'group') as $row)
         'id_module' => $moduleId,
         'id_shop' => (int)Configuration::get('PS_SHOP_DEFAULT'),
         'id_group' => (int)$row['id_group'],
+    ));
+}
+$db->execute('DELETE FROM ' . _DB_PREFIX_ . 'module_carrier WHERE id_module = ' . (int)$moduleId);
+foreach ($db->executeS('SELECT DISTINCT id_reference FROM ' . _DB_PREFIX_ . 'carrier WHERE deleted = 0') as $row) {
+    $db->insert('module_carrier', array(
+        'id_module' => $moduleId,
+        'id_shop' => (int)Configuration::get('PS_SHOP_DEFAULT'),
+        'id_reference' => (int)$row['id_reference'],
     ));
 }
 
@@ -115,4 +123,12 @@ if (!$existing) {
     $product->add();
     $product->addToCategories(array(2));
     StockAvailable::setQuantity((int)$product->id, 0, 999);
+}
+
+if (class_exists('Cache')) {
+    Cache::clean('*');
+}
+if (class_exists('Tools')) {
+    Tools::clearSmartyCache();
+    Tools::clearXMLCache();
 }
