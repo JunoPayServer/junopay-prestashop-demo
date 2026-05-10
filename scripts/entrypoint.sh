@@ -22,11 +22,14 @@ DB_PREFIX=ps_
 mkdir -p /var/run/mysqld
 chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
 
-if [[ ! -d /var/lib/mysql/mysql ]]; then
-  mariadb-install-db --user=mysql --datadir=/var/lib/mysql >/dev/null
+if [[ ! -f /var/lib/mysql/junopay-demo-init ]]; then
+  rm -rf /var/lib/mysql/*
+  mariadb-install-db --user=mysql --datadir=/var/lib/mysql --auth-root-authentication-method=normal >/dev/null
+  touch /var/lib/mysql/junopay-demo-init
+  chown -R mysql:mysql /var/lib/mysql
 fi
 
-mysqld_safe --datadir=/var/lib/mysql --skip-grant-tables --skip-networking=0 --bind-address=127.0.0.1 &
+mysqld_safe --datadir=/var/lib/mysql --skip-networking=0 --bind-address=127.0.0.1 &
 
 for _ in $(seq 1 60); do
   if mysqladmin ping -h 127.0.0.1 --silent; then
@@ -37,6 +40,11 @@ done
 
 mysql -uroot <<SQL
 CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWD}';
+CREATE USER IF NOT EXISTS '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASSWD}';
+GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';
+GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'localhost';
+FLUSH PRIVILEGES;
 SQL
 
 chown -R www-data:www-data /var/www/html
