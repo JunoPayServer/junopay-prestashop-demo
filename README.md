@@ -2,7 +2,7 @@
 
 Deployable PrestaShop demo store for the JunoPay payment module.
 
-The image installs PrestaShop 8.2 with an in-container MariaDB service, installs the bundled `junopay` payment module, and creates a `1 gallon of air` product priced at `1 JUNO`.
+The image installs PrestaShop 8.2 with an in-container MariaDB service, installs the `junopay` payment module from [`JunoPayServer/junopay-prestashop-plugin`](https://github.com/JunoPayServer/junopay-prestashop-plugin), and creates a `1 gallon of air` product priced at `1 JUNO`.
 
 ## Runtime configuration
 
