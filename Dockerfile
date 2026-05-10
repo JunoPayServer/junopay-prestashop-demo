@@ -1,6 +1,6 @@
 FROM prestashop/prestashop:8.2-apache
 
-ARG JUNOPAY_PRESTASHOP_PLUGIN_REF=cf9de78e9aa755223ed708137d3934c5766f0f7b
+ARG JUNOPAY_PRESTASHOP_PLUGIN_REF=844e9879dda6a28ab77dfebedbf27386d717674c
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl mariadb-server mariadb-client \
